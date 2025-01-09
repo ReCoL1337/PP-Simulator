@@ -1,55 +1,70 @@
 ﻿namespace Simulator;
+using Simulator.Maps;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Lab4a();
-        Lab4b();
+        Lab5a();
+        Lab5b();
     }
 
-    static void Lab4a()
+    static void Lab5a()
     {
-        Console.WriteLine("HUNT TEST\n");
-        var o = new Orc() { Name = "Gorbag", Rage = 7 };
-        o.SayHi();
-        for (int i = 0; i < 10; i++)
-        {
-            o.Hunt();
-            o.SayHi();
-        }
+        Console.WriteLine("Testing Point movements:");
+        Point p = new(10, 25);
+        Console.WriteLine(p.Next(Direction.Right));          // (11, 25)
+        Console.WriteLine(p.NextDiagonal(Direction.Right));  // (11, 24)
 
-        Console.WriteLine("\nSING TEST\n");
-        var e = new Elf("Legolas", agility: 2);
-        e.SayHi();
-        for (int i = 0; i < 10; i++)
+        Console.WriteLine("\nTesting Rectangle creation and point containment:");
+        try
         {
-            e.Sing();
-            e.SayHi();
-        }
+            Rectangle r1 = new(0, 0, 5, 5);
+            Console.WriteLine($"r1: {r1}");
+            Console.WriteLine($"Contains (2,3): {r1.Contains(new Point(2, 3))}");
+            Console.WriteLine($"Contains (6,6): {r1.Contains(new Point(6, 6))}");
 
-        Console.WriteLine("\nPOWER TEST\n");
-        Creature[] creatures = {
-            o,
-            e,
-            new Orc("Morgash", 3, 8),
-            new Elf("Elandor", 5, 3)
-        };
-        foreach (Creature creature in creatures)
+            Rectangle r2 = new(new Point(5, 5), new Point(0, 0));
+            Console.WriteLine($"r2: {r2}"); // Should be same as r1
+
+            Rectangle r3 = new(0, 0, 0, 5);
+            Console.WriteLine("This shouldn't print - exception should be thrown");
+        }
+        catch (ArgumentException e)
         {
-            Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
+            Console.WriteLine($"Caught expected exception: {e.Message}");
         }
     }
 
-    static void Lab4b()
+    static void Lab5b()
     {
-        object[] myObjects = {
-            new Animals() { Description = "dogs"},
-            new Birds { Description = "  eagles ", Size = 10 },
-            new Elf("e", 15, -3),
-            new Orc("morgash", 6, 4)
-        };
-        Console.WriteLine("\nMy objects:");
-        foreach (var o in myObjects) Console.WriteLine(o);
+        Console.WriteLine("\nTesting SmallSquareMap:");
+        try
+        {
+            var map = new SmallSquareMap(10);
+            Point p = new(5, 5);
+            
+            Console.WriteLine($"Starting at {p}");
+            Console.WriteLine($"Map contains {p}: {map.Exist(p)}");
+            
+            Point outside = new(-1, -1);
+            Console.WriteLine($"Map contains {outside}: {map.Exist(outside)}");
+            
+            Console.WriteLine($"Moving right: {map.Next(p, Direction.Right)}");
+            Console.WriteLine($"Moving diagonal right: {map.NextDiagonal(p, Direction.Right)}");
+            
+            // Test boundary
+            Point edge = new(9, 9);
+            Console.WriteLine($"\nTesting boundary at {edge}:");
+            Console.WriteLine($"Moving right: {map.Next(edge, Direction.Right)}");
+            Console.WriteLine($"Moving diagonal right: {map.NextDiagonal(edge, Direction.Right)}");
+
+            // Test invalid size
+            var invalidMap = new SmallSquareMap(30);
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Console.WriteLine($"\nCaught expected exception: {e.Message}");
+        }
     }
 }
