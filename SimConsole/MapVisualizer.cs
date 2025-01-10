@@ -34,31 +34,31 @@ namespace SimConsole
             if (creatures.Count > 1)
                 return 'X';
             
-            return creatures[0] switch
-            {
-                Orc => 'O',
-                Elf => 'E',
-                _ => '?'
-            };
+            return creatures[0].Symbol;
         }
 
         public void Draw()
         {
-            if (map is not SmallSquareMap squareMap)
-                throw new ArgumentException("Only SmallSquareMap is supported");
+            int size;
+            if (map is SmallSquareMap squareMap)
+                size = squareMap.Size;
+            else if (map is SmallTorusMap torusMap)
+                size = torusMap.Size;
+            else
+                throw new ArgumentException("Only square maps are supported");
 
-            Console.WriteLine();  // Add extra line before drawing
-            DrawTopBorder(squareMap.Size);
+            Console.WriteLine();
+            DrawTopBorder(size);
             
-            for (int y = squareMap.Size - 1; y >= 0; y--)
+            for (int y = size - 1; y >= 0; y--)
             {
-                DrawRow(y, squareMap.Size);
+                DrawRow(y, size);
                 if (y > 0)
-                    DrawMiddleBorder(squareMap.Size);
+                    DrawMiddleBorder(size);
             }
             
-            DrawBottomBorder(squareMap.Size);
-            Console.WriteLine();  // Add extra line after drawing
+            DrawBottomBorder(size);
+            Console.WriteLine();
         }
 
         private void DrawTopBorder(int size)

@@ -1,9 +1,11 @@
+using Simulator.Maps;
+
 namespace Simulator;
 
-public class Animals
+public class Animals : IMappable
 {
     private string description = "Unknown";
-        
+    
     public string Description
     {
         get => description;
@@ -20,8 +22,14 @@ public class Animals
 
     public virtual string Info => $"{Description} <{Size}>";
 
-    public override string ToString()
+    public string Name => Description;
+    
+    public virtual char Symbol => 'A';
+
+    public virtual Point GetNextPosition(Point current, Direction direction, Map map)
     {
-        return $"{GetType().Name.ToUpper()}: {Info}";
+        return map.Next(current, direction);
     }
+
+    public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
 }

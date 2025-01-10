@@ -71,11 +71,11 @@ public class Simulation {
             if (Finished)
                 throw new InvalidOperationException("Simulation is finished");
 
-            // Update position
-            Positions[currentCreatureIndex] = Map.Next(
-                Positions[currentCreatureIndex], 
-                parsedMoves[currentMoveIndex]
-            );
+            // Update position using the object's movement logic
+            Positions[currentCreatureIndex] = Creatures[currentCreatureIndex]
+                .GetNextPosition(Positions[currentCreatureIndex], 
+                    parsedMoves[currentMoveIndex], 
+                    Map);
 
             // Update indices
             currentCreatureIndex = (currentCreatureIndex + 1) % Creatures.Count;

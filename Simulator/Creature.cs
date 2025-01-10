@@ -48,4 +48,11 @@ public abstract class Creature : IMappable
     {
         return $"{GetType().Name.ToUpper()}: {Info}";
     }
+    
+    public virtual char Symbol => GetType().Name[0];
+
+    public virtual Point GetNextPosition(Point current, Direction direction, Map map)
+    {
+        return map.Next(current, direction);
+    }
 }

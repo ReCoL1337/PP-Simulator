@@ -5,4 +5,6 @@ namespace Simulator.Maps;
 /// </summary>
 public interface IMappable {
     string Name { get; }
+    char Symbol { get; }
+    Point GetNextPosition(Point current, Direction direction, Map map);
 }
