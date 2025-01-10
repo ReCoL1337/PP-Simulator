@@ -6,7 +6,7 @@ namespace SimConsole
     public class MapVisualizer
     {
         private readonly Map map;
-        private readonly Dictionary<Point, List<Creature>> positions = new();
+        private readonly Dictionary<Point, List<IMappable>> positions = new();
 
         public MapVisualizer(Map map)
         {
@@ -18,10 +18,10 @@ namespace SimConsole
             positions.Clear();
         }
 
-        public void AddCreature(Creature creature, Point position)
+        public void AddCreature(IMappable creature, Point position)
         {
             if (!positions.ContainsKey(position))
-                positions[position] = new List<Creature>();
+                positions[position] = new List<IMappable>();
             positions[position].Add(creature);
         }
 
