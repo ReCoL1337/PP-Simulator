@@ -6,8 +6,9 @@ public static class DirectionParser {
             return new List<Direction>();
 
         var directions = new List<Direction>();
+        var invalidChars = new List<char>();
 
-        foreach (var c in input.ToUpper())
+        foreach (var c in input.ToUpper()) {
             switch (c) {
                 case 'U':
                     directions.Add(Direction.Up);
@@ -21,7 +22,15 @@ public static class DirectionParser {
                 case 'L':
                     directions.Add(Direction.Left);
                     break;
+                default:
+                    invalidChars.Add(c);
+                    break;
             }
+        }
+
+        if (invalidChars.Count > 0)
+            throw new ArgumentException(
+                $"Invalid direction characters: {string.Join(", ", invalidChars)}");
 
         return directions;
     }

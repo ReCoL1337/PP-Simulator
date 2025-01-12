@@ -3,20 +3,26 @@ using Simulator.Maps;
 namespace Simulator;
 
 public class Birds : Animals {
-    public bool CanFly { get; init; } = true;
+    private readonly bool canFly;
+    
+    public Birds(string description, uint size, bool canFly = true) {
+        Description = description;
+        Size = size;
+        this.canFly = canFly;
+    }
+    
+    public override string Info => $"{base.Info} ({(canFly ? "fly+" : "fly-")})";
 
-    public override string Info => $"{Description} ({(CanFly ? "fly+" : "fly-")}) <{Size}>";
-
-    public override char Symbol => CanFly ? 'B' : 'b';
+    public override char Symbol => canFly ? 'B' : 'b';
 
     public override Point GetNextPosition(Point current, Direction direction, Map map) {
-        if (CanFly) {
-            // Flying birds move two steps in the given direction
-            var intermediate = map.Next(current, direction);
-            return map.Next(intermediate, direction);
+        if (canFly) {
+            // Double move for flying birds
+            var midPoint = map.Next(current, direction);
+            return map.Next(midPoint, direction);
         }
         else {
-            // Flightless birds move diagonally
+            // Single diagonal move for non-flying birds
             return map.NextDiagonal(current, direction);
         }
     }

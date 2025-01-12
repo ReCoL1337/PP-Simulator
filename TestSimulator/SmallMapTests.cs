@@ -34,7 +34,7 @@ public class SmallMapTests {
     [Fact]
     public void Add_ValidPosition_ShouldAddCreature() {
         var map = new TestMap(5, 5);
-        var creature = new Orc("Test");
+        var creature = new Animals { Description = "Test" };
         var position = new Point(2, 2);
 
         map.Add(creature, position);
@@ -47,7 +47,7 @@ public class SmallMapTests {
     [Fact]
     public void Remove_ExistingCreature_ShouldRemoveCreature() {
         var map = new TestMap(5, 5);
-        var creature = new Orc("Test");
+        var creature = new Animals { Description = "Test" };
         var position = new Point(2, 2);
 
         map.Add(creature, position);
@@ -60,7 +60,7 @@ public class SmallMapTests {
     [Fact]
     public void Move_ValidPositions_ShouldMoveCreature() {
         var map = new TestMap(5, 5);
-        var creature = new Orc("Test");
+        var creature = new Animals { Description = "Test" };
         var from = new Point(2, 2);
         var to = new Point(3, 3);
 

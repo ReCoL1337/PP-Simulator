@@ -2,7 +2,7 @@ using Simulator.Maps;
 
 namespace Simulator;
 
-public class Animals : MappableBase {
+public class Animals : Mappable {
     private string description = "Unknown";
 
     public string Description {
@@ -22,12 +22,4 @@ public class Animals : MappableBase {
     protected override string GetName() => Description;
 
     public override char Symbol => 'A';
-
-    public override Point GetNextPosition(Point current, Direction direction, Map map) {
-        return map.Next(current, direction);
-    }
-
-    public override string ToString() {
-        return $"{GetType().Name.ToUpper()}: {Info}";
-    }
 }

@@ -2,11 +2,11 @@ using Simulator.Maps;
 
 namespace Simulator;
 
-public abstract class Creature : MappableBase {
+public abstract class Creature : Mappable {
     private string name = "Unknown";
     private int level = 1;
 
-    private string Name {
+    protected string Name {
         get => name;
         init {
             if (value == null) return;
@@ -29,7 +29,7 @@ public abstract class Creature : MappableBase {
         Level = level;
     }
 
-    public Creature() {
+    protected Creature() {
     }
 
     public abstract void SayHi();
@@ -46,8 +46,4 @@ public abstract class Creature : MappableBase {
     public override char Symbol => GetType().Name[0];
 
     protected override string GetName() => name;
-
-    public override Point GetNextPosition(Point current, Direction direction, Map map) {
-        return map.Next(current, direction);
-    }
 }

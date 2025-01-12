@@ -1,15 +1,27 @@
 namespace Simulator.Maps;
 
 public abstract class Map {
+    public const int MinSize = 5;
+    public const int MaxSize = 100;
+    
     public int SizeX { get; }
     public int SizeY { get; }
 
     protected Map(int sizeX, int sizeY) {
-        if (sizeX < 5) throw new ArgumentOutOfRangeException(nameof(sizeX), "Map width must be at least 5");
-        if (sizeY < 5) throw new ArgumentOutOfRangeException(nameof(sizeY), "Map height must be at least 5");
+        ValidateSize(sizeX, nameof(sizeX));
+        ValidateSize(sizeY, nameof(sizeY));
         
         SizeX = sizeX;
         SizeY = sizeY;
+    }
+
+    private static void ValidateSize(int size, string paramName) {
+        if (size < MinSize)
+            throw new ArgumentOutOfRangeException(paramName, 
+                $"Map dimension must be at least {MinSize}");
+        if (size > MaxSize)
+            throw new ArgumentOutOfRangeException(paramName, 
+                $"Map dimension cannot exceed {MaxSize}");
     }
 
     public bool Exist(Point p) {
