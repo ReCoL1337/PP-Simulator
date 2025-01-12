@@ -2,15 +2,12 @@ using Simulator.Maps;
 
 namespace Simulator;
 
-public class Animals : IMappable
-{
+public class Animals : MappableBase {
     private string description = "Unknown";
-    
-    public string Description
-    {
+
+    public string Description {
         get => description;
-        init
-        {
+        init {
             if (value == null) return;
             description = Validator.Shortener(value.Trim(), 3, 15, '#');
             if (char.IsLower(description[0]))
@@ -22,14 +19,15 @@ public class Animals : IMappable
 
     public virtual string Info => $"{Description} <{Size}>";
 
-    public string Name => Description;
-    
-    public virtual char Symbol => 'A';
+    protected override string GetName() => Description;
 
-    public virtual Point GetNextPosition(Point current, Direction direction, Map map)
-    {
+    public override char Symbol => 'A';
+
+    public override Point GetNextPosition(Point current, Direction direction, Map map) {
         return map.Next(current, direction);
     }
 
-    public override string ToString() => $"{GetType().Name.ToUpper()}: {Info}";
+    public override string ToString() {
+        return $"{GetType().Name.ToUpper()}: {Info}";
+    }
 }

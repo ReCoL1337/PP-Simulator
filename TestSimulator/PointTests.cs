@@ -3,16 +3,14 @@ using Xunit;
 
 namespace TestSimulator;
 
-public class PointTests
-{
+public class PointTests {
     [Theory]
     [InlineData(1, 2, Direction.Up, 1, 3)]
     [InlineData(1, 2, Direction.Right, 2, 2)]
     [InlineData(1, 2, Direction.Down, 1, 1)]
     [InlineData(1, 2, Direction.Left, 0, 2)]
-    public void Next_ShouldReturnCorrectNextPoint(int x, int y, 
-        Direction direction, int expectedX, int expectedY)
-    {
+    public void Next_ShouldReturnCorrectNextPoint(int x, int y,
+        Direction direction, int expectedX, int expectedY) {
         // Arrange
         var point = new Point(x, y);
         var expected = new Point(expectedX, expectedY);
@@ -29,9 +27,8 @@ public class PointTests
     [InlineData(1, 2, Direction.Right, 2, 1)]
     [InlineData(1, 2, Direction.Down, 0, 1)]
     [InlineData(1, 2, Direction.Left, 0, 3)]
-    public void NextDiagonal_ShouldReturnCorrectNextPoint(int x, int y, 
-        Direction direction, int expectedX, int expectedY)
-    {
+    public void NextDiagonal_ShouldReturnCorrectNextPoint(int x, int y,
+        Direction direction, int expectedX, int expectedY) {
         // Arrange
         var point = new Point(x, y);
         var expected = new Point(expectedX, expectedY);
@@ -44,8 +41,7 @@ public class PointTests
     }
 
     [Fact]
-    public void ToString_ShouldReturnCorrectFormat()
-    {
+    public void ToString_ShouldReturnCorrectFormat() {
         // Arrange
         var point = new Point(3, 4);
 

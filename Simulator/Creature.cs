@@ -2,16 +2,13 @@ using Simulator.Maps;
 
 namespace Simulator;
 
-public abstract class Creature : IMappable
-{
+public abstract class Creature : MappableBase {
     private string name = "Unknown";
     private int level = 1;
 
-    public string Name
-    {
+    private string Name {
         get => name;
-        init
-        {
+        init {
             if (value == null) return;
             name = Validator.Shortener(value.Trim(), 3, 25, '#');
             if (char.IsLower(name[0]))
@@ -19,8 +16,7 @@ public abstract class Creature : IMappable
         }
     }
 
-    public int Level
-    {
+    public int Level {
         get => level;
         init => level = Validator.Limiter(value, 1, 10);
     }
@@ -28,31 +24,30 @@ public abstract class Creature : IMappable
     public abstract string Info { get; }
     public abstract int Power { get; }
 
-    public Creature(string name = "Unknown", int level = 1)
-    {
+    public Creature(string name = "Unknown", int level = 1) {
         Name = name;
         Level = level;
     }
 
-    public Creature() { }
+    public Creature() {
+    }
 
     public abstract void SayHi();
 
-    public void Upgrade()
-    {
+    public void Upgrade() {
         if (level < 10)
             level++;
     }
 
-    public override string ToString()
-    {
+    public override string ToString() {
         return $"{GetType().Name.ToUpper()}: {Info}";
     }
-    
-    public virtual char Symbol => GetType().Name[0];
 
-    public virtual Point GetNextPosition(Point current, Direction direction, Map map)
-    {
+    public override char Symbol => GetType().Name[0];
+
+    protected override string GetName() => name;
+
+    public override Point GetNextPosition(Point current, Direction direction, Map map) {
         return map.Next(current, direction);
     }
 }

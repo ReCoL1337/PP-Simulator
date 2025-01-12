@@ -3,33 +3,28 @@ using Simulator.Maps;
 
 namespace Simulator;
 
-public static class Program
-{
+public static class Program {
     [STAThread]
-    public static void Main()
-    {
+    public static void Main() {
         Lab5a();
         Lab5b();
     }
 
-    static void Lab5a()
-    {
+    private static void Lab5a() {
         Point p = new(10, 25);
-        Console.WriteLine(p.Next(Direction.Right));          // (11, 25)
-        Console.WriteLine(p.NextDiagonal(Direction.Right));  // (11, 24)
+        Console.WriteLine(p.Next(Direction.Right)); // (11, 25)
+        Console.WriteLine(p.NextDiagonal(Direction.Right)); // (11, 24)
 
-        try
-        {
-            Rectangle r1 = new(1, 1, 1, 5);  // Should throw exception
+        try {
+            Rectangle r1 = new(1, 1, 1, 5); // Should throw exception
             Console.WriteLine(r1);
         }
-        catch (ArgumentException e)
-        {
+        catch (ArgumentException e) {
             Console.WriteLine($"Error: {e.Message}");
         }
 
-        Rectangle r2 = new(5, 1, 1, 10);  // Should swap coordinates
-        Console.WriteLine(r2);  // (1, 1):(5, 10)
+        Rectangle r2 = new(5, 1, 1, 10); // Should swap coordinates
+        Console.WriteLine(r2); // (1, 1):(5, 10)
 
         Point testPoint1 = new(3, 5);
         Point testPoint2 = new(0, 0);
@@ -37,14 +32,11 @@ public static class Program
         Console.WriteLine($"Contains {testPoint2}: {r2.Contains(testPoint2)}");
     }
 
-    static void Lab5b()
-    {
-        try
-        {
-            SmallSquareMap map = new(3);  // Should throw exception
+    private static void Lab5b() {
+        try {
+            SmallSquareMap map = new(3); // Should throw exception
         }
-        catch (ArgumentOutOfRangeException e)
-        {
+        catch (ArgumentOutOfRangeException e) {
             Console.WriteLine($"Error: {e.Message}");
         }
 
