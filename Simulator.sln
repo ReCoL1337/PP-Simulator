@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSimulator", "TestSimula
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimConsole", "SimConsole\SimConsole.csproj", "{74CFDDB5-FA18-4856-8B64-F7B96542611D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimWeb", "SimWeb\SimWeb.csproj", "{20DA948C-7EB0-4986-94CB-BA37E35B57D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{74CFDDB5-FA18-4856-8B64-F7B96542611D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74CFDDB5-FA18-4856-8B64-F7B96542611D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74CFDDB5-FA18-4856-8B64-F7B96542611D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20DA948C-7EB0-4986-94CB-BA37E35B57D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20DA948C-7EB0-4986-94CB-BA37E35B57D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20DA948C-7EB0-4986-94CB-BA37E35B57D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20DA948C-7EB0-4986-94CB-BA37E35B57D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

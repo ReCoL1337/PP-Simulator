@@ -1,0 +1,62 @@
+.map-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.map-header button {
+    border: 1px solid #ccc;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.turn {
+    min-width: 80px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.map {
+    display: grid;
+    grid-template-columns: auto repeat(8, 1fr);
+    gap: 1px;
+    background-color: #90EE90;
+    border: 1px solid #666;
+    margin: 1rem auto;
+    width: max-content;
+}
+
+.map > div {
+    width: 60px;
+    height: 60px;
+    background: #90EE90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dotted #666;
+}
+
+.map > p {
+    width: 20px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: blue;
+}
+
+.map > span {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert {
+    color: darkred;
+    font-weight: bold;
+}

@@ -1,0 +1,41 @@
+@page
+@using Simulator
+@model SimulationModel
+@{
+    ViewData["Title"] = "Simulation";
+}
+
+<div class="map-header">
+    <form method="post">
+        <button type="submit" asp-page-handler="Previous" class="btn">&lt;</button>
+    </form>
+
+    <span class="turn">Turn @Model.CurrentTurn</span>
+
+    <form method="post">
+        <button type="submit" asp-page-handler="Next" class="btn">&gt;</button>
+    </form>
+</div>
+
+<div class="alert">@Model.Status</div>
+
+<div class="map">
+    @for (var y = Model.Map.SizeY - 1; y >= 0; y--)
+    {
+        <p>@y</p>
+        @for (var x = 0; x < Model.Map.SizeX; x++)
+        {
+            var (image, alt) = Model.GetCellContent(new Point(x, y));
+            <div>
+                @if (!string.IsNullOrEmpty(image))
+                {
+                    <img src="/images/@image" alt="@alt" style="width:50px; height:50px;" />
+                }
+            </div>
+        }
+    }
+    @for (var x = -1; x < Model.Map.SizeX; x++)
+    {
+        <span>@(x < 0 ? "" : x.ToString())</span>
+    }
+</div>

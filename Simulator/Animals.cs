@@ -1,6 +1,5 @@
+using Simulator;
 using Simulator.Maps;
-
-namespace Simulator;
 
 public class Animals : Mappable {
     private string description = "Unknown";
@@ -16,10 +15,7 @@ public class Animals : Mappable {
     }
 
     public uint Size { get; set; } = 3;
-
-    public virtual string Info => $"{Description} <{Size}>";
-
+    public override string ToString() => $"ANIMALS: {Description} <{Size}>";
     protected override string GetName() => Description;
-
     public override char Symbol => 'A';
 }

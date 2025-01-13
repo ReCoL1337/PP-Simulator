@@ -1,6 +1,5 @@
+using Simulator;
 using Simulator.Maps;
-
-namespace Simulator;
 
 public class Birds : Animals {
     private readonly bool canFly;
@@ -11,8 +10,7 @@ public class Birds : Animals {
         this.canFly = canFly;
     }
     
-    public override string Info => $"{base.Info} ({(canFly ? "fly+" : "fly-")})";
-
+    public override string ToString() => $"BIRDS: {Description} <{Size}> ({(canFly ? "fly+" : "fly-")})";
     public override char Symbol => canFly ? 'B' : 'b';
 
     public override Point GetNextPosition(Point current, Direction direction, Map map) {

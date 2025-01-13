@@ -1,5 +1,4 @@
-﻿using System;
-using Simulator.Maps;
+﻿using Simulator.Maps;
 
 namespace Simulator;
 
