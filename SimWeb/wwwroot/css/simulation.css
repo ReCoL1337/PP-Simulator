@@ -6,12 +6,12 @@
     margin: 1rem 0;
 }
 
-.map-header button {
-    border: 1px solid #ccc;
-    background: white;
-    padding: 0.25rem 0.75rem;
-    font-size: 1.2rem;
-    cursor: pointer;
+.map-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
 }
 
 .turn {
