@@ -1,33 +1,26 @@
 namespace Simulator;
 
-public class Orc : Creature {
-    private int rage;
-    private int huntCount = 0;
+public class Orc : Creature
+{
+    private readonly int baseRage;
+    private int rageModifier;
 
-    public int Rage {
-        get => rage;
-        init => rage = Validator.Limiter(value, 0, 10);
-    }
+    public int Rage => Validator.Limiter(baseRage + rageModifier, 0, 10);
 
     public override int Power => Level * 7 + Rage * 3;
-
     public override string Info => $"{Name} [{Level}][{Rage}]";
 
     public Orc(string name = "Unknown", int level = 1, int rage = 0)
-        : base(name, level) {
-        Rage = rage;
+        : base(name, level)
+    {
+        baseRage = rage;
+        rageModifier = 0;
     }
 
-    public Orc() {
+    public void ModifyRage(int amount)
+    {
+        rageModifier = Validator.Limiter(rageModifier + amount, -baseRage, 10 - baseRage);
     }
 
-    public override void SayHi() {
-        Console.WriteLine($"Grr... Me {Info}");
-    }
-
-    public void Hunt() {
-        huntCount++;
-        if (huntCount % 2 == 0 && rage < 10)
-            rage++;
-    }
+    public override void SayHi() => Console.WriteLine($"Grr... Me {Info}");
 }

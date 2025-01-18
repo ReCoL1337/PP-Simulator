@@ -1,3 +1,6 @@
+using Simulator.Maps;
+using Simulator.StatusEffects;
+
 namespace Simulator;
 
 /// <summary>
@@ -6,7 +9,7 @@ namespace Simulator;
 public class SimulationTurnLog
 {
     /// <summary>
-    /// Text representastion of moving object in this turn.
+    /// Text representation of moving object in this turn.
     /// CurrentMappable.ToString()
     /// </summary>
     public required string Mappable { get; init; }
@@ -18,8 +21,18 @@ public class SimulationTurnLog
     public required string Move { get; init; }
     
     /// <summary>
-    /// Dictionary of IMappable.Symbol on the map in this turn.
+    /// Current weather in this turn
+    /// </summary>
+    public required string Weather { get; init; }
+    
+    /// <summary>
+    /// Dictionary of creatures on the map in this turn.
     /// Multiple creatures can occupy the same position.
     /// </summary>
-    public required Dictionary<Point, List<char>> Symbols { get; init; }
+    public required Dictionary<Point, List<IMappable>> Creatures { get; init; }
+
+    /// <summary>
+    /// Dictionary of active status effects for each creature.
+    /// </summary>
+    public Dictionary<string, List<IStatusEffect>> StatusEffects { get; init; } = new();
 }

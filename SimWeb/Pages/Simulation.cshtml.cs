@@ -1,8 +1,9 @@
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SimConsole;
 using Simulator;
 using Simulator.Maps;
+using Simulator.StatusEffects;
 
 namespace SimWeb.Pages;
 
@@ -13,6 +14,24 @@ public class SimulationModel : PageModel
     private static SimulationHistory? history;
     private static Dictionary<string, Point> originalPositions = new();
     
+    private bool AreCreaturesOfSameType(IMappable a, IMappable b)
+    {
+        // Check if they're the exact same type
+        if (a.GetType() != b.GetType()) return false;
+
+        // If they're birds or animals, check their descriptions match
+        if (a is Birds birdA && b is Birds birdB)
+        {
+            return birdA.Name == birdB.Name;
+        }
+        if (a is Animals animalA && b is Animals animalB)
+        {
+            return animalA.Description == animalB.Description;
+        }
+
+        return true;
+    }
+
     public int CurrentTurn
     {
         get
@@ -45,11 +64,9 @@ public class SimulationModel : PageModel
         if (history == null) return null;
         
         var turnLog = history.GetTurn(turnNumber);
-        foreach (var (pos, symbols) in turnLog.Symbols)
+        foreach (var (pos, creatures) in turnLog.Creatures)
         {
-            // Check the position that has the first character of the creature name
-            char creatureSymbol = creatureName[0];
-            if (symbols.Contains(creatureSymbol))
+            if (creatures.Any(c => c.ToString() == creatureName))
             {
                 return pos;
             }
@@ -75,11 +92,11 @@ public class SimulationModel : PageModel
 
             var positions = new List<Point>
             {
-                new(2, 2),
-                new(3, 1),
-                new(5, 5),
-                new(7, 3),
-                new(0, 4)
+                new(2, 2),    // Orc
+                new(3, 1),    // Elf
+                new(5, 5),    // Rabbits
+                new(7, 3),    // Eagles
+                new(0, 4)     // Ostriches
             };
 
             // Store original positions
@@ -93,36 +110,42 @@ public class SimulationModel : PageModel
         }
     }
 
-    public (string image, string alt) GetCellContent(Point point)
+    public (string image, string alt, int count) GetCellContent(Point point)
     {
         if (history == null || CurrentTurn >= history.TurnLogs.Count)
-            return ("", "");
+            return ("", "", 0);
 
         var turnLog = history.GetTurn(CurrentTurn);
-        if (!turnLog.Symbols.ContainsKey(point))
-            return ("", "");
+        if (!turnLog.Creatures.ContainsKey(point))
+            return ("", "", 0);
 
-        var symbols = turnLog.Symbols[point];
+        var creatures = turnLog.Creatures[point];
+        if (creatures.Count == 0)
+            return ("", "", 0);
 
-        if (symbols.Count == 0)
-            return ("", "");
-
-        if (symbols.Count > 1)
-            return ("combo-80.png", string.Join(",", symbols));
-
-        var symbol = symbols[0];
-        var imageName = symbol switch
+        // If there's more than one different type of creature
+        if (creatures.Count > 1 && creatures.Select(c => c.GetType()).Distinct().Count() > 1)
         {
-            'O' => "ork-80.png",
-            'E' => "elf-80.png",
-            'A' => "rabbit-80.png",
-            'B' => "eagle-80.png",
-            'b' => "emu-80.png",
-            _ => $"{symbol.ToString().ToLower()}-80.png"
+            return ("combo-80.png", string.Join(",", creatures.Select(c => c.ToString())), 
+                creatures.Sum(x => x is Animals animGroup ? (int)animGroup.Size : 1));
+        }
+
+        // Single type of creature - use the first one
+        var creature = creatures[0];
+        var count = creature is Animals animalSingle ? (int)animalSingle.Size : creatures.Count;
+
+        var imageName = creature switch
+        {
+            Birds birdType when birdType.ToString().Contains("Eagles") => "eagle-80.png",
+            Birds birdType when birdType.ToString().Contains("Ostriches") => "emu-80.png",
+            Orc => "orc-80.png",
+            Elf => "elf-80.png",
+            Animals animType when animType.Description == "Rabbits" => "rabbit-80.png",
+            _ => "combo-80.png"
         };
 
-        return (imageName, symbol.ToString());
-    }
+        return (imageName, creature.ToString(), count);
+    } 
 
     public IActionResult OnPostPrevious()
     {
@@ -151,4 +174,61 @@ public class SimulationModel : PageModel
         
         return RedirectToPage();
     }
+    
+    public IEnumerable<(string name, string type, string stats, string position, string effects)> GetCreatureStats()
+{
+    if (history == null || CurrentTurn >= history.TurnLogs.Count)
+        return Enumerable.Empty<(string, string, string, string, string)>();
+
+    var turnLog = history.GetTurn(CurrentTurn);
+    var stats = new List<(string name, string type, string stats, string position, string effects)>();
+
+    foreach (var (position, creatures) in turnLog.Creatures)
+    {
+        foreach (var creature in creatures.DistinctBy(c => c.ToString()))
+        {
+            var count = creatures.Count(c => c.ToString() == creature.ToString());
+            
+            var creatureType = creature switch
+            {
+                Birds b when b.ToString().Contains("Eagles") => "Birds",
+                Birds b when b.ToString().Contains("Ostriches") => "Birds",
+                Animals a when a.Description == "Rabbits" => "Animals",
+                _ => creature.GetType().Name
+            };
+
+            var statsStr = creature switch
+            {
+                Orc orc => $"Level: {orc.Level}, Rage: {orc.Rage}, Power: {orc.Power}",
+                Elf elf => $"Level: {elf.Level}, Agility: {elf.Agility}, Power: {elf.Power}",
+                Birds birds => $"Size: {birds.Size}, Can Fly: {(birds.ToString().Contains("fly+") ? "Yes" : "No")}",
+                Animals animals => $"Size: {animals.Size}",
+                _ => string.Empty
+            };
+
+            var name = count > 1 ? $"{creature.Name} (x{count})" : creature.Name;
+
+            // Collect status effects for this creature
+            var creatureKey = creature.ToString();
+            var effects = string.Empty;
+
+            // Check if this specific creature instance has status effects
+            if (turnLog.StatusEffects.TryGetValue(creatureKey, out var statusEffects) && statusEffects.Any())
+            {
+                // Get names of status effects
+                effects = string.Join(", ", statusEffects.Select(e => e.Name));
+            }
+
+            stats.Add((
+                name: name,
+                type: creatureType,
+                stats: statsStr,
+                position: position.ToString(),
+                effects: effects
+            ));
+        }
+    }
+
+    return stats.OrderBy(s => s.type).ThenBy(s => s.name);
+}
 }

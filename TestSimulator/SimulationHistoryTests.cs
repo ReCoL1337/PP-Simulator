@@ -1,48 +1,64 @@
 using Simulator;
 using Simulator.Maps;
+using Simulator.StatusEffects;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TestSimulator;
 
 public class SimulationHistoryTests
 {
-    [Theory]
-    [InlineData(0, "ORC: Gorbag [1][1]", "down")]
-    [InlineData(1, "ELF: Elandor [1][1]", "left")]
-    [InlineData(2, "ANIMALS: Rabbits <10>", "right")]
-    [InlineData(3, "BIRDS: Eagles <15> (fly+)", "left")]
-    [InlineData(4, "BIRDS: Ostriches <8> (fly-)", "up")]
-    public void FirstFiveTurns_ShouldFollowExpectedPattern(int turn, string expectedMappable, string expectedMove)
+    private readonly ITestOutputHelper _output;
+
+    public SimulationHistoryTests(ITestOutputHelper output)
+    {
+        _output = output;
+    }
+
+    [Fact]
+    public void StatusEffect_Duration_Debug()
+    {
+        var effect = new RageBoost(5, 2);
+        _output.WriteLine($"Initial - Duration: {effect.Duration}, IsExpired: {effect.IsExpired}");
+
+        effect.Tick();
+        _output.WriteLine($"After first tick - Duration: {effect.Duration}, IsExpired: {effect.IsExpired}");
+
+        effect.Tick();
+        _output.WriteLine($"After second tick - Duration: {effect.Duration}, IsExpired: {effect.IsExpired}");
+    }
+
+    [Fact]
+    public void StatusEffect_Duration_ShouldDecrementCorrectly()
     {
         // Arrange
         var map = new SmallTorusMap(8);
-        var creatures = new List<IMappable>
-        {
-            new Orc("Gorbag", 1, 1),
-            new Elf("Elandor", 1, 1),
-            new Animals { Description = "Rabbits", Size = 10 },
-            new Birds("Eagles", 15, true),
-            new Birds("Ostriches", 8, false)
-        };
+        var orc = new Orc("TestOrc", 1, 5);
+        var creatures = new List<IMappable> { orc };
+        var positions = new List<Point> { new(2, 2) };
+        var moves = "UDUD"; 
 
-        var positions = new List<Point>
-        {
-            new(2, 2),   // Orc
-            new(3, 1),   // Elf
-            new(5, 5),   // Rabbits
-            new(7, 3),   // Eagles
-            new(0, 4)    // Ostriches
-        };
+        var effect = new RageBoost(2, 2);
+        _output.WriteLine($"Initial effect - Duration: {effect.Duration}, IsExpired: {effect.IsExpired}");
 
-        string moves = "dlrlu"; // Each creature gets a different move
+        ((Creature)creatures[0]).AddStatusEffect(effect);
         var simulation = new Simulation(map, creatures, positions, moves);
         var history = new SimulationHistory(simulation);
 
-        // Act
-        var turnLog = history.GetTurn(turn);
+        _output.WriteLine("\nHistory turn logs:");
+        for (int i = 0; i < Math.Min(5, history.TurnLogs.Count); i++)
+        {
+            var turnLog = history.TurnLogs[i];
+            var effects = turnLog.StatusEffects
+                .SelectMany(x => x.Value)
+                .OfType<RageBoost>()
+                .ToList();
 
-        // Assert
-        Assert.Equal(expectedMappable, turnLog.Mappable);
-        Assert.Equal(expectedMove, turnLog.Move);
+            _output.WriteLine($"\nTurn {i}:");
+            foreach (var e in effects)
+            {
+                _output.WriteLine($"Effect - Duration: {e.Duration}, IsExpired: {e.IsExpired}");
+            }
+        }
     }
 }

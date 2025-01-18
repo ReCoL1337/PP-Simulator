@@ -1,43 +1,70 @@
 @page
-@using Simulator
-@model SimulationModel
-@{
-    ViewData["Title"] = "Simulation";
-}
+@model SimWeb.Pages.SimulationModel
 
 <div class="map-header">
     <form method="post">
-        <button type="submit" asp-page-handler="Previous" class="btn">&lt;</button>
+        <button type="submit" asp-page-handler="Previous">&lt;</button>
     </form>
-
-    <span class="turn">Turn @Model.CurrentTurn</span>
-
+    <div class="turn">@Model.CurrentTurn</div>
     <form method="post">
-        <button type="submit" asp-page-handler="Next" class="btn">&gt;</button>
+        <button type="submit" asp-page-handler="Next">&gt;</button>
     </form>
 </div>
 
-
-<div class="map">
-    @for (var y = Model.Map.SizeY - 1; y >= 0; y--)
-    {
-        <p>@y</p>
-        @for (var x = 0; x < Model.Map.SizeX; x++)
-        {
-            var (image, alt) = Model.GetCellContent(new Point(x, y));
-            <div>
-                @if (!string.IsNullOrEmpty(image))
-                {
-                    <img src="/images/@image" alt="@alt" style="width:50px; height:50px;" />
-                }
-            </div>
-        }
-    }
-    @for (var x = -1; x < Model.Map.SizeX; x++)
-    {
-        <span>@(x < 0 ? "" : x.ToString())</span>
-    }
-</div>
-<div class="map-header">
 <div class="alert">@Model.Status</div>
+
+<div class="simulation-container">
+    <div class="map">
+        <div></div>
+        @for (int x = 0; x < Model.Map.SizeX; x++)
+        {
+            <span>@x</span>
+        }
+
+        @for (int y = Model.Map.SizeY - 1; y >= 0; y--)
+        {
+            <p>@y</p>
+            @for (int x = 0; x < Model.Map.SizeX; x++)
+            {
+                var content = Model.GetCellContent(new Simulator.Point(x, y));
+                <div>
+                    @if (!string.IsNullOrEmpty(content.image))
+                    {
+                        <img src="/images/@content.image" alt="@content.alt" title="@content.alt" class="creature-image" />
+                        @if (content.count > 1)
+                        {
+                            <span class="creature-count">@content.count</span>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <div class="stats-table">
+        <h3>Creature Stats</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Stats</th>
+                    <th>Position</th>
+                    <th>Effects</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var creature in Model.GetCreatureStats())
+                {
+                    <tr>
+                        <td>@creature.name</td>
+                        <td>@creature.type</td>
+                        <td>@creature.stats</td>
+                        <td>@creature.position</td>
+                        <td>@creature.effects</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

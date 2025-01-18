@@ -15,11 +15,12 @@ public class Program {
 
         // Clear and redraw map
         visualizer.Clear();
-        foreach (var (position, symbols) in turn.Symbols) {
-            if (symbols.Count == 1) {
-                visualizer.AddCreature(new DummyMappable(symbols[0]), position);
+        foreach (var (position, creatures) in turn.Creatures) {
+            if (creatures.Count == 1) {
+                visualizer.AddCreature(creatures[0], position);
             }
-            else if (symbols.Count > 1) {
+            else if (creatures.Count > 1) {
+                // For multiple creatures at the same position, use X as the symbol
                 visualizer.AddCreature(new DummyMappable('X'), position);
             }
         }

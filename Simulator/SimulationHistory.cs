@@ -1,4 +1,5 @@
 using Simulator.Maps;
+using Simulator.StatusEffects;
 
 namespace Simulator;
 
@@ -8,47 +9,56 @@ public class SimulationHistory
     
     public SimulationHistory(Simulation simulation)
     {
+        // Record initial state
+        RecordState(simulation);
+        
+        // Create a copy of the simulation that will run the moves
         var sim = new Simulation(
             simulation.Map,
             simulation.Creatures,
             simulation.Positions,
             simulation.Moves);
-            
-        // Record initial state before any moves
-        RecordState(sim);
-        
-        // Record each turn
+
+        // Record each turn, including final state
         while (!sim.Finished)
         {
             sim.Turn();
-            if (!sim.Finished)
-            {
-                RecordState(sim);
-            }
+            RecordState(sim);
         }
     }
-    
+
     private void RecordState(Simulation simulation)
     {
-        var symbols = new Dictionary<Point, List<char>>();
+        var creatures = new Dictionary<Point, List<IMappable>>();
+        var statusEffects = new Dictionary<string, List<IStatusEffect>>();
         
-        // Group creatures by position
         for (var i = 0; i < simulation.Creatures.Count; i++)
         {
             var position = simulation.Positions[i];
-            var symbol = simulation.Creatures[i].Symbol;
+            var creature = simulation.Creatures[i];
             
-            if (!symbols.ContainsKey(position))
-                symbols[position] = new List<char>();
-                
-            symbols[position].Add(symbol);
+            if (!creatures.ContainsKey(position))
+                creatures[position] = new List<IMappable>();
+            
+            creatures[position].Add(creature);
+
+            if (creature is Creature c)
+            {
+                var effects = c.StatusEffects.ToList();
+                if (effects.Any())
+                {
+                    statusEffects[creature.ToString()] = effects;
+                }
+            }
         }
         
         TurnLogs.Add(new SimulationTurnLog
         {
             Mappable = simulation.CurrentCreature.ToString(),
             Move = simulation.CurrentMoveName,
-            Symbols = symbols
+            Weather = simulation.CurrentWeather,
+            Creatures = creatures,
+            StatusEffects = statusEffects
         });
     }
     

@@ -2,14 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    margin: 1rem 0;
-}
-
-.map-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     gap: 1rem;
     margin: 1.5rem 0;
 }
@@ -20,43 +12,120 @@
     font-size: 1rem;
 }
 
+.simulation-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 1rem auto;
+    max-width: 1200px;
+}
+
 .map {
     display: grid;
     grid-template-columns: auto repeat(8, 1fr);
-    gap: 1px;
     background-color: #90EE90;
-    border: 1px solid #666;
-    margin: 1rem auto;
-    width: max-content;
+    border: 2px solid #666;
 }
 
 .map > div {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
     background: #90EE90;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dotted #666;
+    border: 1px solid #666;
+    position: relative;
 }
 
 .map > p {
-    width: 20px;
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: blue;
+    color: #333;
+    font-weight: bold;
 }
 
 .map > span {
-    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #333;
+    font-weight: bold;
 }
 
 .alert {
     color: darkred;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.creature-count {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.creature-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.stats-table {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 400px;
+}
+
+.stats-table h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    text-align: center;
+}
+
+.stats-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+.stats-table th {
+    font-weight: bold;
+    color: #666;
+    border-bottom: 2px solid #ddd;
+    padding: 0.75rem 0.5rem;
+}
+
+.stats-table tr:last-child td {
+    border-bottom: none;
+}
+
+.stats-cell div {
+    white-space: nowrap;
+    line-height: 1.5;
+}
+
+.stats-cell {
+    min-width: 120px;
 }
